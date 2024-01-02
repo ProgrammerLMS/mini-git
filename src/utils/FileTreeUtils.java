@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileTreeUtils {
 
@@ -64,5 +66,12 @@ public class FileTreeUtils {
             dir = join(dir, s);
         }
         return dir;
+    }
+
+    public static boolean isValidFileName(String fileName) {
+        String pattern = "^[a-zA-Z0-9_\\.]+$";
+        Pattern regexPattern = Pattern.compile(pattern);
+        Matcher matcher = regexPattern.matcher(fileName);
+        return matcher.matches();
     }
 }

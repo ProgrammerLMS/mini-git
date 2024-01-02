@@ -19,7 +19,7 @@ import java.util.List;
 * it provides several useful utility functions
 * @author P. N. Hilfinger
 * */
-public class PersistenceUtils {
+public class PersistanceUtils {
     /* The length of a complete SHA-1 UID as a hexadecimal numeral. */
     public static final int UID_LENGTH = 40;
 

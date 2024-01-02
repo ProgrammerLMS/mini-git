@@ -1,7 +1,7 @@
 package object;
 
 import utils.FileTreeUtils;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 
 import java.io.File;
 import java.io.Serializable;
@@ -109,6 +109,6 @@ public class Commit implements Serializable {
 
     public void writeCommitIntoObjects(File commitDir) {
         File file = FileTreeUtils.join(commitDir, commitId);
-        PersistenceUtils.writeObject(file, this);
+        PersistanceUtils.writeObject(file, this);
     }
 }

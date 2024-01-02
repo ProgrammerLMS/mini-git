@@ -1,5 +1,5 @@
 import utils.FileTreeUtils;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 import view.CommandPromptGUI;
 
 import javax.swing.*;
@@ -17,14 +17,14 @@ public class Main {
                 JFileChooser fc = new JFileChooser();
                 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 if (temp.exists()) {
-                    String content = PersistenceUtils.readContentsAsString(temp);
+                    String content = PersistanceUtils.readContentsAsString(temp);
                     File recentPath = new File(content);
                     fc.setCurrentDirectory(recentPath);
                 }
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    PersistenceUtils.writeContents(temp, file.getAbsolutePath());
+                    PersistanceUtils.writeContents(temp, file.getAbsolutePath());
                     CommandPromptGUI commandPromptGUI =
                             new CommandPromptGUI(file.getAbsolutePath());
                     commandPromptGUI.setVisible(true);

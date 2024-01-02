@@ -4,7 +4,7 @@ import engine.Repository;
 import object.Commit;
 import object.Stage;
 import utils.FileTreeUtils;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 import view.ViewResponseEntity;
 import view.ViewResponseEnum;
 
@@ -74,7 +74,7 @@ public class AddCommand implements ICommand{
         logger.info("add file: " + fileName + " " + file.getAbsolutePath());
         String content, blobId;
         Stage stage = repository.getStageFromIndexFile();
-        content = PersistenceUtils.readContentsAsString(file);
+        content = PersistanceUtils.readContentsAsString(file);
         blobId = repository.checkBlobExist(fileName, content);
         // check this file version in current branch
         Commit currentCommit = repository.getCurrentLocalBranchHead();
@@ -104,7 +104,7 @@ public class AddCommand implements ICommand{
             // and not stage it for removal!
             stage.removeFileOutOfStage(fileName);
         }
-        PersistenceUtils.writeObject(repository.STAGE_FILE, stage);
+        PersistanceUtils.writeObject(repository.STAGE_FILE, stage);
     }
 
     private void addDirectory(String dirName, File dir) {

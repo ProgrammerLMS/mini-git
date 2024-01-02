@@ -101,4 +101,12 @@ public class Engine {
         LogCommand logCommand = new LogCommand(repository, command);
         return logCommand.excute();
     }
+
+    public ViewResponseEntity branch(String command) {
+        if (!repository.checkRepositoryExist()) {
+            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
+        }
+        BranchCommand branchCommand = new BranchCommand(repository, command);
+        return branchCommand.excute();
+    }
 }

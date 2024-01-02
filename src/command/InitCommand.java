@@ -2,7 +2,7 @@ package command;
 
 import engine.Repository;
 import object.Commit;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 import view.ViewResponseEntity;
 import view.ViewResponseEnum;
 
@@ -42,10 +42,6 @@ public class InitCommand implements ICommand {
         if (!repository.BLOB_DIR.exists()) {
             repository.BLOB_DIR.mkdir();
         }
-        // TODO Tree重要吗
-        if (!repository.TREE_DIR.exists()) {
-            repository.TREE_DIR.mkdir();
-        }
         repository.initBranch();
         /* do not forget every time you init, there will be a new Commit which point nothing;*/
         Date initDate = new Date(0);
@@ -56,9 +52,8 @@ public class InitCommand implements ICommand {
            they will all have the same UID and
            all commits in all repositories will trace back to it. */
         String obj = initMessage + initDate;
-        String commitId = PersistenceUtils.sha1(obj);
+        String commitId = PersistanceUtils.sha1(obj);
         // init commit
-        // TODO tree id in Commit
         Commit commit = new Commit(commitId, initMessage, initDate, "", "");
         commit.writeCommitIntoObjects(repository.COMMIT_DIR);
         // local"master" branch head and HEAD file both point at the init commit

@@ -8,7 +8,7 @@ import object.Blob;
 import object.Commit;
 import object.Stage;
 import utils.FileTreeUtils;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 
 public class Repository {
 
@@ -20,7 +20,6 @@ public class Repository {
     public final File OBJECT_DIR;
     public final File COMMIT_DIR;
     public final File BLOB_DIR;
-    public final File TREE_DIR;
     /* Stage data file */
     public final File STAGE_FILE;
     /* Branch file directory */
@@ -44,7 +43,6 @@ public class Repository {
         OBJECT_DIR = FileTreeUtils.join(GIT_DIR, "objects");
         COMMIT_DIR = FileTreeUtils.join(OBJECT_DIR, "commits");
         BLOB_DIR = FileTreeUtils.join(OBJECT_DIR, "blobs");
-        TREE_DIR = FileTreeUtils.join(OBJECT_DIR, "trees");
         STAGE_FILE = FileTreeUtils.join(GIT_DIR, "index");
         BRANCH_DIR = FileTreeUtils.join(GIT_DIR, "refs");
         LOCAL_BRANCH_DIR = FileTreeUtils.join(BRANCH_DIR, "heads");
@@ -56,16 +54,16 @@ public class Repository {
     public boolean checkRepositoryExist() {
         return GIT_DIR.exists() && OBJECT_DIR.exists()
                 && BRANCH_DIR.exists() && LOCAL_BRANCH_DIR.exists()
-                && COMMIT_DIR.exists() && BLOB_DIR.exists() && TREE_DIR.exists()
-                && GIT_DIR.isDirectory() && OBJECT_DIR.isDirectory()
-                && BRANCH_DIR.isDirectory() && LOCAL_BRANCH_DIR.isDirectory()
-                && COMMIT_DIR.isDirectory() && BLOB_DIR.isDirectory() && TREE_DIR.isDirectory();
+                && COMMIT_DIR.exists() && BLOB_DIR.exists() && GIT_DIR.isDirectory()
+                && OBJECT_DIR.isDirectory() && BRANCH_DIR.isDirectory()
+                && LOCAL_BRANCH_DIR.isDirectory() && COMMIT_DIR.isDirectory()
+                && BLOB_DIR.isDirectory();
     }
 
     public void initBranch() {
         if (checkRepositoryExist()) {
             if (HEAD_FILE.exists()) {
-                String currentLocalBranchInfo = PersistenceUtils.readContentsAsString(HEAD_FILE);
+                String currentLocalBranchInfo = PersistanceUtils.readContentsAsString(HEAD_FILE);
                 currentBranchName = currentLocalBranchInfo.split(" ")[1].split("/")[2];
             } else {
                 currentBranchName = "master";
@@ -76,21 +74,21 @@ public class Repository {
     /* write current commitId into refs/heads/branchName */
     public void writeCurrentCommitIdIntoCurrentLocalBranch(String commitId) {
         File file = FileTreeUtils.join(LOCAL_BRANCH_DIR, currentBranchName);
-        PersistenceUtils.writeContents(file, commitId);
+        PersistanceUtils.writeContents(file, commitId);
     }
 
     /* write current branchInfo into HEAD_FILE */
     public void writeCurrentLocalBranchIntoHead() {
         String content = "ref: " + BRANCH_DIR.getName() + "/"
                 + LOCAL_BRANCH_DIR.getName() + "/" + currentBranchName;
-        PersistenceUtils.writeContents(HEAD_FILE, content);
+        PersistanceUtils.writeContents(HEAD_FILE, content);
     }
 
     /* id stores in refs/heads/branchName */
     public String getCurrentLocalBranchHeadId() {
         File file = FileTreeUtils.join(LOCAL_BRANCH_DIR, currentBranchName);
         if (file.exists()) {
-            return PersistenceUtils.readContentsAsString(file);
+            return PersistanceUtils.readContentsAsString(file);
         } else {
             return "";
         }
@@ -99,7 +97,7 @@ public class Repository {
     public Stage getStageFromIndexFile() {
         Stage stage;
         if (STAGE_FILE.exists()) {
-            stage = PersistenceUtils.readObject(STAGE_FILE, Stage.class);
+            stage = PersistanceUtils.readObject(STAGE_FILE, Stage.class);
         } else {
             stage = new Stage();
         }
@@ -110,7 +108,7 @@ public class Repository {
         String commitId = getCurrentLocalBranchHeadId();
         File commitFile = FileTreeUtils.join(COMMIT_DIR, commitId);
         if (commitFile.exists()) {
-            return PersistenceUtils.readObject(commitFile, Commit.class);
+            return PersistanceUtils.readObject(commitFile, Commit.class);
         } else {
             return null;
         }
@@ -144,7 +142,7 @@ public class Repository {
     /* using filename+filecontent as key */
     public String checkBlobExist(String fileName, String content) {
         String obj = fileName + content;
-        String blobId = PersistenceUtils.sha1(obj);
+        String blobId = PersistanceUtils.sha1(obj);
         File blobFile = FileTreeUtils.join(BLOB_DIR, blobId);
         if (blobFile.exists()) {
             return blobId;
@@ -156,17 +154,17 @@ public class Repository {
     public String writeBlobIntoObjects(String fileName, String content) {
 
         String obj = fileName + content;
-        String blobId = PersistenceUtils.sha1(obj);
+        String blobId = PersistanceUtils.sha1(obj);
         Blob blob = new Blob(blobId, content);
         File file = FileTreeUtils.join(BLOB_DIR, blobId);
-        PersistenceUtils.writeObject(file, blob);
+        PersistanceUtils.writeObject(file, blob);
         return blobId;
     }
 
     /* write commit into objects */
     public void writeCommitIntoObjects(String commitId, Commit commit) {
         File file = FileTreeUtils.join(COMMIT_DIR, commitId);
-        PersistenceUtils.writeObject(file, commit);
+        PersistanceUtils.writeObject(file, commit);
     }
 
     public Map<String, String> getCurrentFilesToContentMap() {
@@ -203,11 +201,11 @@ public class Repository {
         if (allPlainFileNames != null) {
             for (String fileName : allPlainFileNames) {
                 File file = FileTreeUtils.join(dir, fileName);
-                String content = PersistenceUtils.readContentsAsString(file);
+                String content = PersistanceUtils.readContentsAsString(file);
                 if (!dirName.equals("")) {
                     fileName = dirName + "/" + fileName;
                 }
-                String blobId = PersistenceUtils.sha1(fileName + content);
+                String blobId = PersistanceUtils.sha1(fileName + content);
                 filesMap.put(fileName, blobId);
             }
         }

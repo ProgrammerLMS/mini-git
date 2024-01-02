@@ -1,8 +1,12 @@
 package command;
 
 import engine.Repository;
+import utils.FileTreeUtils;
+import utils.PersistanceUtils;
 import view.ViewResponseEntity;
+import view.ViewResponseEnum;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 public class BranchCommand implements ICommand{
@@ -18,6 +22,48 @@ public class BranchCommand implements ICommand{
 
     @Override
     public ViewResponseEntity excute() {
+        // TODO git checkout -b <branch>
+        String[] commandSplits = command.split(" ");
+        if (commandSplits.length == 2) {
+            return showAllLocalBranchInfo();
+        }
+        if (commandSplits.length == 3) {
+            String branchName = commandSplits[2];
+            if (FileTreeUtils.isValidFileName(branchName)) {
+                return createNewBranch(branchName);
+            }
+        }
+        if (commandSplits.length == 4) {
+            if (commandSplits[2].equals("-d")) {
+                String branchName = commandSplits[3];
+                return deleteGivenBranch(branchName);
+            }
+        }
+        return ViewResponseEntity.response(ViewResponseEnum.UNKNOWN_COMMAND);
+    }
+
+    private ViewResponseEntity showAllLocalBranchInfo() {
+        return null;
+    }
+
+    /* Creates a new branch with the given name,
+       and points it at the current head commit.
+       A branch is nothing more than a name for a reference to a commit node.
+       This command does NOT immediately switch to the newly created branch
+       Before you ever call branch,
+       your code should be running with a default branch called master*/
+    private ViewResponseEntity createNewBranch(String newBranchName) {
+        File file = FileTreeUtils.join(repository.LOCAL_BRANCH_DIR, newBranchName);
+        if (file.exists()) {
+            return ViewResponseEntity.response("A branch with that name already exists.",
+                    ViewResponseEntity.WARNING_COLOR);
+        }
+        String commitId = repository.getCurrentLocalBranchHeadId();
+        PersistanceUtils.writeContents(file, commitId);
+        return ViewResponseEntity.response(ViewResponseEnum.NONE_MESSAGE);
+    }
+
+    private ViewResponseEntity deleteGivenBranch(String branchName) {
         return null;
     }
 }

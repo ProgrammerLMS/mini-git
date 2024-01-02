@@ -4,7 +4,7 @@ import engine.Repository;
 import object.Commit;
 import object.Stage;
 import utils.FileTreeUtils;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 import view.ViewResponseEntity;
 import view.ViewResponseEnum;
 
@@ -123,8 +123,8 @@ public class RmCommand implements ICommand{
         Stage stage = repository.getStageFromIndexFile();
         File rmFile = FileTreeUtils.join(repository.CWD, rmFileName);
         Commit commit = repository.getCurrentLocalBranchHead();
-        String rmFileContent = PersistenceUtils.readContentsAsString(rmFile);
-        String blobId = PersistenceUtils.sha1(rmFileName + rmFileContent);
+        String rmFileContent = PersistanceUtils.readContentsAsString(rmFile);
+        String blobId = PersistanceUtils.sha1(rmFileName + rmFileContent);
         Map<String, String> addedFiles = stage.getAddedFiles();
         Map<String, String> commitedFiles = commit.getCommitedFiles();
         if (!addedFiles.containsKey(rmFileName) && !commitedFiles.containsKey(rmFileName)) {
@@ -162,7 +162,7 @@ public class RmCommand implements ICommand{
                 commit.removeFileOutOfCommit(rmFileName);
                 commit.writeCommitIntoObjects(repository.COMMIT_DIR);
                 if (!cached) {
-                    PersistenceUtils.restrictedDelete(rmFile);
+                    PersistanceUtils.restrictedDelete(rmFile);
                 }
             }
         } else {
@@ -171,7 +171,7 @@ public class RmCommand implements ICommand{
                             + "(use --cached to keep the file, or -f to force removal)\n", Color.RED);
         }
 
-        PersistenceUtils.writeObject(repository.STAGE_FILE, stage);
+        PersistanceUtils.writeObject(repository.STAGE_FILE, stage);
         return common_response;
     }
 }
