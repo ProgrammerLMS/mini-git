@@ -37,7 +37,7 @@ public class Engine {
             case "log":
                 return log(command);
             case "branch":
-
+                return branch(command);
             case "checkout":
 
             default:

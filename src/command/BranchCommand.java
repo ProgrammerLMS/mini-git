@@ -7,6 +7,8 @@ import view.ViewResponseEntity;
 import view.ViewResponseEnum;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 public class BranchCommand implements ICommand{
@@ -43,7 +45,19 @@ public class BranchCommand implements ICommand{
     }
 
     private ViewResponseEntity showAllLocalBranchInfo() {
-        return null;
+        StringBuilder branchBuilder = new StringBuilder();
+        File[] branchFiles = repository.LOCAL_BRANCH_DIR.listFiles();
+        if (branchFiles != null) {
+            Arrays.sort(branchFiles, Comparator.comparing(File::getName));
+            for (File file : branchFiles) {
+                if (file.getName().equals(repository.currentBranchName)) {
+                    branchBuilder.append("*").append(file.getName()).append("\n");
+                } else {
+                    branchBuilder.append(file.getName()).append("\n");
+                }
+            }
+        }
+        return ViewResponseEntity.response(branchBuilder.toString(), ViewResponseEntity.INFO_COLOR);
     }
 
     /* Creates a new branch with the given name,

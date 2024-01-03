@@ -89,7 +89,7 @@ public class AddCommand implements ICommand{
                 stage.removeFileOutOfRemoval(fileName);
                 // roll back to commit
                 currentCommit.addFileToCommit(fileName, blobId);
-                currentCommit.writeCommitIntoObjects(repository.COMMIT_DIR);
+                currentCommit.writeCommitIntoObjects(repository.OBJECT_DIR);
             } else {
                 stage.removeFileOutOfRemoval(fileName);
                 stage.addFileToStage(fileName, blobId);

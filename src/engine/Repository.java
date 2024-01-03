@@ -18,8 +18,6 @@ public class Repository {
     public final File GIT_DIR;
     /* Blob and Commit and Tree data directory */
     public final File OBJECT_DIR;
-    public final File COMMIT_DIR;
-    public final File BLOB_DIR;
     /* Stage data file */
     public final File STAGE_FILE;
     /* Branch file directory */
@@ -41,8 +39,6 @@ public class Repository {
         CWD = new File(currentWorkDirectory);
         GIT_DIR = FileTreeUtils.join(CWD, ".mini-git");
         OBJECT_DIR = FileTreeUtils.join(GIT_DIR, "objects");
-        COMMIT_DIR = FileTreeUtils.join(OBJECT_DIR, "commits");
-        BLOB_DIR = FileTreeUtils.join(OBJECT_DIR, "blobs");
         STAGE_FILE = FileTreeUtils.join(GIT_DIR, "index");
         BRANCH_DIR = FileTreeUtils.join(GIT_DIR, "refs");
         LOCAL_BRANCH_DIR = FileTreeUtils.join(BRANCH_DIR, "heads");
@@ -54,10 +50,8 @@ public class Repository {
     public boolean checkRepositoryExist() {
         return GIT_DIR.exists() && OBJECT_DIR.exists()
                 && BRANCH_DIR.exists() && LOCAL_BRANCH_DIR.exists()
-                && COMMIT_DIR.exists() && BLOB_DIR.exists() && GIT_DIR.isDirectory()
-                && OBJECT_DIR.isDirectory() && BRANCH_DIR.isDirectory()
-                && LOCAL_BRANCH_DIR.isDirectory() && COMMIT_DIR.isDirectory()
-                && BLOB_DIR.isDirectory();
+                && GIT_DIR.isDirectory() && OBJECT_DIR.isDirectory()
+                && BRANCH_DIR.isDirectory() && LOCAL_BRANCH_DIR.isDirectory();
     }
 
     public void initBranch() {
@@ -106,7 +100,7 @@ public class Repository {
 
     public Commit getCurrentLocalBranchHead() {
         String commitId = getCurrentLocalBranchHeadId();
-        File commitFile = FileTreeUtils.join(COMMIT_DIR, commitId);
+        File commitFile = FileTreeUtils.join(OBJECT_DIR, commitId);
         if (commitFile.exists()) {
             return PersistanceUtils.readObject(commitFile, Commit.class);
         } else {
@@ -143,7 +137,7 @@ public class Repository {
     public String checkBlobExist(String fileName, String content) {
         String obj = fileName + content;
         String blobId = PersistanceUtils.sha1(obj);
-        File blobFile = FileTreeUtils.join(BLOB_DIR, blobId);
+        File blobFile = FileTreeUtils.join(OBJECT_DIR, blobId);
         if (blobFile.exists()) {
             return blobId;
         } else {
@@ -156,15 +150,20 @@ public class Repository {
         String obj = fileName + content;
         String blobId = PersistanceUtils.sha1(obj);
         Blob blob = new Blob(blobId, content);
-        File file = FileTreeUtils.join(BLOB_DIR, blobId);
+        File file = FileTreeUtils.join(OBJECT_DIR, blobId);
         PersistanceUtils.writeObject(file, blob);
         return blobId;
     }
 
     /* write commit into objects */
     public void writeCommitIntoObjects(String commitId, Commit commit) {
-        File file = FileTreeUtils.join(COMMIT_DIR, commitId);
+        File file = FileTreeUtils.join(OBJECT_DIR, commitId);
         PersistanceUtils.writeObject(file, commit);
+    }
+
+    public Commit getCommitById(String commitId) {
+        File file = FileTreeUtils.join(OBJECT_DIR, commitId);
+        return PersistanceUtils.readObject(file, Commit.class);
     }
 
     public Map<String, String> getCurrentFilesToContentMap() {

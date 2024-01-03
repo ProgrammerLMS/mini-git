@@ -5,8 +5,6 @@ import javax.swing.*;
 import javax.swing.text.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -27,7 +25,7 @@ public class CommandPromptGUI extends JFrame {
         engine = new Engine(currentWorkDirectory);
         this.currentWorkDirectory = engine.refreshBranch();
 
-        Font font = new Font("Consolas", Font.BOLD, 20);
+        Font font = new Font("Consolas", Font.BOLD, 22);
         outputTextPane = new JTextPane();
         outputTextPane.setEditable(false);
         outputTextPane.setFont(font);

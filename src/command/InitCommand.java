@@ -36,12 +36,6 @@ public class InitCommand implements ICommand {
         if (!repository.LOCAL_BRANCH_DIR.exists()) {
             repository.LOCAL_BRANCH_DIR.mkdir();
         }
-        if (!repository.COMMIT_DIR.exists()) {
-            repository.COMMIT_DIR.mkdir();
-        }
-        if (!repository.BLOB_DIR.exists()) {
-            repository.BLOB_DIR.mkdir();
-        }
         repository.initBranch();
         /* do not forget every time you init, there will be a new Commit which point nothing;*/
         Date initDate = new Date(0);
@@ -55,7 +49,7 @@ public class InitCommand implements ICommand {
         String commitId = PersistanceUtils.sha1(obj);
         // init commit
         Commit commit = new Commit(commitId, initMessage, initDate, "", "");
-        commit.writeCommitIntoObjects(repository.COMMIT_DIR);
+        commit.writeCommitIntoObjects(repository.OBJECT_DIR);
         // local"master" branch head and HEAD file both point at the init commit
         repository.writeCurrentCommitIdIntoCurrentLocalBranch(commitId);
         // write branchInfo into HEAD

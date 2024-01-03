@@ -3,7 +3,7 @@ package command;
 import engine.Repository;
 import object.Commit;
 import object.Stage;
-import utils.PersistenceUtils;
+import utils.PersistanceUtils;
 import view.ViewResponseEntity;
 import view.ViewResponseEnum;
 
@@ -45,7 +45,7 @@ public class CommitCommand implements ICommand{
     private ViewResponseEntity clearStageAndCommit(String message, String secondParentId) {
         Date date = new Date();
         String obj = message + date;
-        String newCommitId = PersistenceUtils.sha1(obj);
+        String newCommitId = PersistanceUtils.sha1(obj);
         // how we get the lastest commitId? -> current branch head point at it
         String currentCommitId = repository.getCurrentLocalBranchHeadId();
         Commit currentCommit = repository.getCurrentLocalBranchHead();
@@ -70,7 +70,7 @@ public class CommitCommand implements ICommand{
         }
         // 1.update index
         stage.clear();
-        PersistenceUtils.writeObject(repository.STAGE_FILE, stage);
+        PersistanceUtils.writeObject(repository.STAGE_FILE, stage);
         // 2.update refs/heads
         repository.writeCurrentCommitIdIntoCurrentLocalBranch(newCommitId);
         // 3.write new commit into object

@@ -160,7 +160,7 @@ public class RmCommand implements ICommand{
                     stage.removeFileOutOfStage(rmFileName);
                 } else stage.removeFileForRemoval(rmFileName, commitedFiles.get(rmFileName));
                 commit.removeFileOutOfCommit(rmFileName);
-                commit.writeCommitIntoObjects(repository.COMMIT_DIR);
+                commit.writeCommitIntoObjects(repository.OBJECT_DIR);
                 if (!cached) {
                     PersistanceUtils.restrictedDelete(rmFile);
                 }
