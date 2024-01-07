@@ -17,7 +17,7 @@ public class CheckoutCommand implements ICommand{
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         return null;
     }
 }

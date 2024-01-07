@@ -5,7 +5,7 @@ import view.ViewResponseEntity;
 public class ResetCommand implements ICommand{
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         return null;
     }
 }

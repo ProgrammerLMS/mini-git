@@ -19,7 +19,7 @@ public class InitCommand implements ICommand {
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         String[] commandSplits = command.split(" ");
         if (commandSplits.length > 2) {
             return ViewResponseEntity.response(ViewResponseEnum.UNKNOWN_COMMAND);

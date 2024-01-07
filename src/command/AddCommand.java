@@ -33,7 +33,7 @@ public class AddCommand implements ICommand{
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         String[] commandSplits = repository.commandParseSplit(command);
         if (commandSplits.length < 3) {
             return ViewResponseEntity.response(ViewResponseEnum.UNKNOWN_COMMAND);

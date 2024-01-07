@@ -23,7 +23,7 @@ public class CommitCommand implements ICommand{
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         String[] commandSplits = repository.commandParseSplit(command);
         if (commandSplits.length == 4) {
             if (commandSplits[2].equals("-m")) {

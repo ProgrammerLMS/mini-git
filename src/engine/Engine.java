@@ -59,7 +59,7 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.ALREADY_INIT);
         }
         InitCommand initCommand = new InitCommand(repository, command);
-        return initCommand.excute();
+        return initCommand.execute();
     }
 
     private ViewResponseEntity add(String command) {
@@ -67,7 +67,7 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
         }
         AddCommand addCommand = new AddCommand(repository, command);
-        return addCommand.excute();
+        return addCommand.execute();
     }
 
     private ViewResponseEntity commit(String command) {
@@ -75,7 +75,7 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
         }
         CommitCommand commitCommand = new CommitCommand(repository, command);
-        return commitCommand.excute();
+        return commitCommand.execute();
     }
 
     private ViewResponseEntity status(String command) {
@@ -83,7 +83,7 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
         }
         StatusCommand statusCommand = new StatusCommand(repository, command);
-        return statusCommand.excute();
+        return statusCommand.execute();
     }
 
     private ViewResponseEntity rm(String command) {
@@ -91,7 +91,7 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
         }
         RmCommand rmCommand = new RmCommand(repository, command);
-        return rmCommand.excute();
+        return rmCommand.execute();
     }
 
     public ViewResponseEntity log(String command) {
@@ -99,7 +99,7 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
         }
         LogCommand logCommand = new LogCommand(repository, command);
-        return logCommand.excute();
+        return logCommand.execute();
     }
 
     public ViewResponseEntity branch(String command) {
@@ -107,6 +107,6 @@ public class Engine {
             return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
         }
         BranchCommand branchCommand = new BranchCommand(repository, command);
-        return branchCommand.excute();
+        return branchCommand.execute();
     }
 }

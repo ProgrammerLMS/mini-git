@@ -23,7 +23,7 @@ public class BranchCommand implements ICommand{
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         // TODO git checkout -b <branch>
         String[] commandSplits = command.split(" ");
         if (commandSplits.length == 2) {

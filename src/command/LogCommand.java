@@ -24,7 +24,7 @@ public class LogCommand implements ICommand{
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         String[] commandSplits = command.split(" ");
         if (commandSplits.length == 2) {
             return showLogInfo(null, null);

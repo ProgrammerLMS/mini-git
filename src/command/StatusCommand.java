@@ -25,7 +25,7 @@ public class StatusCommand implements ICommand{
     }
 
     @Override
-    public ViewResponseEntity excute() {
+    public ViewResponseEntity execute() {
         // TODO command split
         String status = getStatusInfo();
         return ViewResponseEntity.response(status, INFO_COLOR);
