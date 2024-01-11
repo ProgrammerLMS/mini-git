@@ -23,6 +23,8 @@ public class PersistanceUtils {
     /* The length of a complete SHA-1 UID as a hexadecimal numeral. */
     public static final int UID_LENGTH = 40;
 
+    public static final int SHORT_UID_LENGTH = 8;
+
     /* SHA-1 HASH VALUES. */
 
     /*  Returns the SHA-1 hash of the concatenation of VALS, which may

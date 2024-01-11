@@ -24,8 +24,7 @@ public class BranchCommand implements ICommand{
 
     @Override
     public ViewResponseEntity execute() {
-        // TODO git checkout -b <branch>
-        String[] commandSplits = command.split(" ");
+        String[] commandSplits = repository.commandParseSplit(command);
         if (commandSplits.length == 2) {
             return showAllLocalBranchInfo();
         }
@@ -67,9 +66,10 @@ public class BranchCommand implements ICommand{
        Before you ever call branch,
        your code should be running with a default branch called master*/
     private ViewResponseEntity createNewBranch(String newBranchName) {
+        logger.info("new branch name: " + newBranchName);
         File file = FileTreeUtils.join(repository.LOCAL_BRANCH_DIR, newBranchName);
         if (file.exists()) {
-            return ViewResponseEntity.response("A branch with that name already exists.",
+            return ViewResponseEntity.response("A branch with that name already exists.\n",
                     ViewResponseEntity.WARNING_COLOR);
         }
         String commitId = repository.getCurrentLocalBranchHeadId();

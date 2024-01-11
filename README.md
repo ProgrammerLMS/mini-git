@@ -13,6 +13,7 @@
     - [2.5 log](#25-log)
     - [2.6 rm](#26-rm)
     - [2.7 branch](#27-branch)
+    - [2.8 checkout](#28-checkout)
   - [3. 额外功能](#3-额外功能)
   - [4. 运行截图](#4-运行截图)
 # mini-git：用Java实现一个简易版Git
@@ -161,13 +162,34 @@
 
 - 删除分支
 
+### 2.8 checkout
+
+指令
+
+- ##### `git checkout [branch name]`
+
+- ##### `git checkout -b [branch name]`
+
+- ##### `git checkout -- [file] [file] ...`
+
+- ##### `git checkout [commit id] -- [file] [file] ...`
+
+说明
+
+- 所有文件切换到给定分支
+- 创建分支，并切换到该分支
+- 使用当前`head commit`的文件版本覆写该文件
+- 根据指定commit的文件版本覆写该文件
+
 ## 3. 额外功能
 
+- 支持`git [command] -h`查看指令帮助
+- 支持八位`commit id`检索，如`d2ee103f`
 - 系统会缓存上一次最近打开的工作目录
 - 系统会缓存指令，通过键盘上的`↑`与`↓`按键，即可切换指令
 
 ## 4. 运行截图
 
-![](/image/screenshot.png)
+![](image/running.png)
 
 如有疑问，欢迎`emali`至programmerlms@163.com；如有`bug`，那是正常的:)

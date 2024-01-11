@@ -109,4 +109,12 @@ public class Engine {
         BranchCommand branchCommand = new BranchCommand(repository, command);
         return branchCommand.execute();
     }
+
+    public ViewResponseEntity checkout(String command) {
+        if (!repository.checkRepositoryExist()) {
+            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
+        }
+        CheckoutCommand checkoutCommand = new CheckoutCommand(repository, command);
+        return checkoutCommand.execute();
+    }
 }
