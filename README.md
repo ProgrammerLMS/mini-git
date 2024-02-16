@@ -1,3 +1,22 @@
+- [mini-git：用Java实现一个简易版Git](#mini-git用java实现一个简易版git)
+  - [0. 介绍与说明](#0-介绍与说明)
+  - [1. 内部数据结构](#1-内部数据结构)
+    - [1.1 blob](#11-blob)
+    - [1.2 tree](#12-tree)
+    - [1.3 commit](#13-commit)
+    - [1.4 stage](#14-stage)
+  - [2. 支持的指令](#2-支持的指令)
+    - [2.1 init](#21-init)
+    - [2.2 add](#22-add)
+    - [2.3 commit](#23-commit)
+    - [2.4 status](#24-status)
+    - [2.5 log](#25-log)
+    - [2.6 rm](#26-rm)
+    - [2.7 branch](#27-branch)
+    - [2.8 checkout](#28-checkout)
+  - [3. 额外功能](#3-额外功能)
+  - [4. 文件目录](#4-文件目录)
+  - [5. 运行截图](#5-运行截图)
 ## 目录
 
 - [mini-git：用Java实现一个简易版Git](#mini-git用java实现一个简易版git)
@@ -17,7 +36,8 @@
     - [2.7 branch](#27-branch)
     - [2.8 checkout](#28-checkout)
   - [3. 额外功能](#3-额外功能)
-  - [4. 运行截图](#4-运行截图)
+  - [4. 文件目录](#4-文件目录)
+  - [5. 运行截图](#5-运行截图)
 # mini-git：用Java实现一个简易版Git
 
 特此鸣谢`UCB`提供的`skeleton code`！
@@ -190,7 +210,45 @@
 - 系统会缓存上一次最近打开的工作目录
 - 系统会缓存指令，通过键盘上的`↑`与`↓`按键，即可切换指令
 
-## 4. 运行截图
+## 4. 文件目录
+
+```
+├─src
+    │  Main.java
+    │
+    ├─command
+    │      AddCommand.java
+    │      BranchCommand.java
+    │      CheckoutCommand.java
+    │      CommitCommand.java
+    │      ICommand.java
+    │      InitCommand.java
+    │      LogCommand.java
+    │      MergeCommand.java
+    │      ResetCommand.java
+    │      RmCommand.java
+    │      StatusCommand.java
+    │
+    ├─engine
+    │      Engine.java
+    │      Repository.java
+    │
+    ├─object
+    │      Blob.java
+    │      Commit.java
+    │      Stage.java
+    │
+    ├─utils
+    │      FileTreeUtils.java
+    │      PersistanceUtils.java
+    │
+    └─view
+            CommandPromptGUI.java
+            ViewResponseEntity.java
+            ViewResponseEnum.java
+```
+
+## 5. 运行截图
 
 ![](image/running.png)
 
