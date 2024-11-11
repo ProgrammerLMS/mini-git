@@ -72,9 +72,11 @@ public class Repository {
     }
 
     /* write current branchInfo into HEAD_FILE */
+    private static final String REF_PREFIX = "ref: ";
+    private static final String BRANCH_SEPARATOR = "/";
     public void writeCurrentLocalBranchIntoHead() {
-        String content = "ref: " + BRANCH_DIR.getName() + "/"
-                + LOCAL_BRANCH_DIR.getName() + "/" + currentBranchName;
+        String content = REF_PREFIX + BRANCH_DIR.getName() + BRANCH_SEPARATOR +
+                LOCAL_BRANCH_DIR.getName() + BRANCH_SEPARATOR + currentBranchName;
         PersistanceUtils.writeContents(HEAD_FILE, content);
     }
 
@@ -172,9 +174,7 @@ public class Repository {
         return filesMap;
     }
 
-    private void getCurrentFilesToContentMapHelper(Map<String, String> filesMap,
-                                             String dirName,
-                                             File dir) {
+    private void getCurrentFilesToContentMapHelper(Map<String, String> filesMap, String dirName, File dir) {
         logger.info("current dir: " + dirName);
         File[] subDirs = dir.listFiles(File::isDirectory);
         if (subDirs == null) {
@@ -185,29 +185,23 @@ public class Repository {
         if (dirName.equals("")) {
             subDirList.remove(GIT_DIR);
         }
-        String tempStoreDirName = dirName;
         for (File subDir : subDirList) {
-            if (!dirName.equals("")) {
-                dirName += "/" + subDir.getName();
-            } else {
-                dirName = subDir.getName();
-            }
-            getCurrentFilesToContentMapHelper(filesMap, dirName, subDir);
-            // go back
-            dirName = tempStoreDirName;
+            String newDirName = appendDirName(dirName, subDir.getName());
+            getCurrentFilesToContentMapHelper(filesMap, newDirName, subDir);
         }
         List<String> allPlainFileNames = FileTreeUtils.plainFilenamesIn(dir);
         if (allPlainFileNames != null) {
             for (String fileName : allPlainFileNames) {
                 File file = FileTreeUtils.join(dir, fileName);
                 String content = PersistanceUtils.readContentsAsString(file);
-                if (!dirName.equals("")) {
-                    fileName = dirName + "/" + fileName;
-                }
-                String blobId = PersistanceUtils.sha1(fileName + content);
-                filesMap.put(fileName, blobId);
+                String fullFileName = appendDirName(dirName, fileName);
+                String blobId = PersistanceUtils.sha1(fullFileName + content);
+                filesMap.put(fullFileName, blobId);
             }
         }
+    }
+    private String appendDirName(String dirName, String name) {
+        return dirName.equals("") ? name : dirName + "/" + name;
     }
 
 }

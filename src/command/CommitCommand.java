@@ -15,18 +15,20 @@ import java.util.logging.Logger;
 public class CommitCommand implements ICommand{
     private final Repository repository;
     private final String command;
-    private final Logger logger = Logger.getLogger(AddCommand.class.getName());
+    private final Logger logger = Logger.getLogger(CommitCommand.class.getName());
+
 
     public CommitCommand(Repository repository, String command) {
         this.repository = repository;
         this.command = command;
     }
 
+    private static final String COMMIT_MESSAGE_FLAG = "-m";
     @Override
     public ViewResponseEntity execute() {
         String[] commandSplits = repository.commandParseSplit(command);
         if (commandSplits.length == 4) {
-            if (commandSplits[2].equals("-m")) {
+            if (commandSplits[2].equals(COMMIT_MESSAGE_FLAG)) {
                 logger.info("commit message: " + commandSplits[3]);
                 return clearStageAndCommit(commandSplits[3], "");
             }
@@ -46,6 +48,7 @@ public class CommitCommand implements ICommand{
         Date date = new Date();
         String obj = message + date;
         String newCommitId = PersistanceUtils.sha1(obj);
+        logger.info("Entering clearStageAndCommit with message: " + message + " and secondParentId: " + secondParentId);
         // how we get the lastest commitId? -> current branch head point at it
         String currentCommitId = repository.getCurrentLocalBranchHeadId();
         Commit currentCommit = repository.getCurrentLocalBranchHead();

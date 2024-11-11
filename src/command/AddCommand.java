@@ -9,6 +9,7 @@ import view.ViewResponseEntity;
 import view.ViewResponseEnum;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -70,41 +71,44 @@ public class AddCommand implements ICommand{
        as can happen when a file is changed, added, and then changed back to it’s original version.
        The file will no longer be staged for removal,
        see git rm, if it was at the time of the command. */
+    public String content, blobId;
     private void addSingleFile(String fileName, File file) {
-        logger.info("add file: " + fileName + " " + file.getAbsolutePath());
-        String content, blobId;
+        logger.info("Entering addSingleFile with file: " + fileName + " " +
+                file.getAbsolutePath());
+
         Stage stage = repository.getStageFromIndexFile();
         content = PersistanceUtils.readContentsAsString(file);
         blobId = repository.checkBlobExist(fileName, content);
-        // check this file version in current branch
+        handleFileInStage(fileName, blobId, stage);
+        PersistanceUtils.writeObject(repository.STAGE_FILE, stage);
+        logger.info("Exiting addSingleFile with file: " + fileName);
+    }
+    private void handleFileInStage(String fileName, String blobId, Stage stage)
+    {
         Commit currentCommit = repository.getCurrentLocalBranchHead();
         Map<String, String> commitedFiles = currentCommit.getCommitedFiles();
-        /* read blob data and check file content;
-         * if the content change, add it to the stage area */
         if (blobId.equals("")) {
             blobId = repository.writeBlobIntoObjects(fileName, content);
         }
         if (stage.getRemovedFiles().containsKey(fileName)) {
-            if (stage.getRemovedFiles().get(fileName).equals(blobId)) {
-                stage.removeFileOutOfRemoval(fileName);
-                // roll back to commit
-                currentCommit.addFileToCommit(fileName, blobId);
-                currentCommit.writeCommitIntoObjects(repository.OBJECT_DIR);
-            } else {
-                stage.removeFileOutOfRemoval(fileName);
-                stage.addFileToStage(fileName, blobId);
-                // do not roll back, you need a new commit
-            }
+            handleRemovedFile(fileName, blobId, stage, currentCommit);
         } else {
             stage.addFileToStage(fileName, blobId);
         }
-        // I made a change here
         if (commitedFiles.getOrDefault(fileName, "").equals(blobId)) {
-            // if this unchanged file exist in stage, remove it from stage
-            // and not stage it for removal!
             stage.removeFileOutOfStage(fileName);
         }
-        PersistanceUtils.writeObject(repository.STAGE_FILE, stage);
+    }
+    private void handleRemovedFile(String fileName, String blobId, Stage stage,
+                                   Commit currentCommit) {
+        if (stage.getRemovedFiles().get(fileName).equals(blobId)) {
+            stage.removeFileOutOfRemoval(fileName);
+            currentCommit.addFileToCommit(fileName, blobId);
+            currentCommit.writeCommitIntoObjects(repository.OBJECT_DIR);
+        } else {
+            stage.removeFileOutOfRemoval(fileName);
+            stage.addFileToStage(fileName, blobId);
+        }
     }
 
     private void addDirectory(String dirName, File dir) {

@@ -3,6 +3,8 @@ package engine;
 import command.*;
 import view.ViewResponseEntity;
 import view.ViewResponseEnum;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Engine {
     private final String currentWorkDirectory;
@@ -14,11 +16,32 @@ public class Engine {
         repository.initBranch();
     }
 
+    private String[] parseCommand(String command) {
+        if (!command.contains("\"")) {
+            return command.split(" ");
+        } else {
+            boolean insideQuotes = false;
+            StringBuilder sb = new StringBuilder();
+            List<String> result = new ArrayList<>();
+            for (char c : command.toCharArray()) {
+                if (c == '\"') {
+                    insideQuotes = !insideQuotes;
+                } else if (c == ' ' && !insideQuotes) {
+                    result.add(sb.toString());
+                    sb.setLength(0);
+                } else {
+                    sb.append(c);
+                }
+            }
+            result.add(sb.toString());
+            return result.toArray(new String[0]);
+        }
+    }
     public ViewResponseEntity commandResponse(String command) {
         if (command.length() == 0) {
             return ViewResponseEntity.response(ViewResponseEnum.NONE_MESSAGE);
         }
-        String[] commandSplits = command.split(" ");
+        String[] commandSplits = parseCommand(command);
         if (commandSplits.length == 1 || !commandSplits[0].equals("git")) {
             return ViewResponseEntity.response(ViewResponseEnum.UNKNOWN_COMMAND);
         }
@@ -54,67 +77,38 @@ public class Engine {
         }
     }
 
+    private ViewResponseEntity executeCommand(ICommand command) {
+        if (!repository.checkRepositoryExist()) {
+            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
+        }
+        return command.execute();
+    }
+
     private ViewResponseEntity init(String command) {
         if (repository.checkRepositoryExist()) {
             return ViewResponseEntity.response(ViewResponseEnum.ALREADY_INIT);
         }
-        InitCommand initCommand = new InitCommand(repository, command);
-        return initCommand.execute();
+        return executeCommand(new InitCommand(repository, command));
     }
-
     private ViewResponseEntity add(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        AddCommand addCommand = new AddCommand(repository, command);
-        return addCommand.execute();
+        return executeCommand(new AddCommand(repository, command));
     }
-
     private ViewResponseEntity commit(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        CommitCommand commitCommand = new CommitCommand(repository, command);
-        return commitCommand.execute();
+        return executeCommand(new CommitCommand(repository, command));
     }
-
     private ViewResponseEntity status(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        StatusCommand statusCommand = new StatusCommand(repository, command);
-        return statusCommand.execute();
+        return executeCommand(new StatusCommand(repository, command));
     }
-
     private ViewResponseEntity rm(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        RmCommand rmCommand = new RmCommand(repository, command);
-        return rmCommand.execute();
+        return executeCommand(new RmCommand(repository, command));
     }
-
     public ViewResponseEntity log(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        LogCommand logCommand = new LogCommand(repository, command);
-        return logCommand.execute();
+        return executeCommand(new LogCommand(repository, command));
     }
-
     public ViewResponseEntity branch(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        BranchCommand branchCommand = new BranchCommand(repository, command);
-        return branchCommand.execute();
+        return executeCommand(new BranchCommand(repository, command));
     }
-
     public ViewResponseEntity checkout(String command) {
-        if (!repository.checkRepositoryExist()) {
-            return ViewResponseEntity.response(ViewResponseEnum.NOT_INIT);
-        }
-        CheckoutCommand checkoutCommand = new CheckoutCommand(repository, command);
-        return checkoutCommand.execute();
+        return executeCommand(new CheckoutCommand(repository, command));
     }
 }
